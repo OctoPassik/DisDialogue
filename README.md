@@ -1,50 +1,58 @@
-# Discord Dialog Simulator
+# DisDialogue
 
 ![Discord Dialog Simulator](https://i.imgur.com/Z4OUzsn.png)
 
 ## 🎭 About
 
-Discord Dialog Simulator is a powerful tool designed to simulate and test Discord conversations using webhooks. Perfect for developers, community managers, and Discord enthusiasts who want to prototype interactions or test bot responses without cluttering their actual Discord servers.
+DisDialogue is a powerful Discord conversation simulator that uses webhooks to prototype and test multi-character interactions. It's perfect for developers, community managers, and Discord enthusiasts who want to experiment with dialogue flows without cluttering their actual Discord servers.
 
 ## ✨ Features
 
 - 🤖 Simulate multi-character conversations
 - 🎨 Customizable character avatars and names
 - 💬 Real-time webhook message sending
-- 🔄 Easy-to-use graphical interface
+- 🔄 User-friendly graphical interface
 - 💾 Persistent data storage between sessions
 - 🔐 Secure bot token and webhook URL management
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### Option 1: Run from Source
+
+#### Prerequisites
 
 - Python 3.7+
 - PyQt5
 - aiohttp
 - discord.py
 
-### Installation
+#### Installation
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/discord-dialog-simulator.git
+   git clone https://github.com/OctoPassik/DisDialogue.git
    ```
 
 2. Navigate to the project directory:
    ```
-   cd discord-dialog-simulator
+   cd DisDialogue
    ```
 
 3. Install the required dependencies:
    ```
-   pip install -r requirements.txt
+   pip install PyQt5 aiohttp discord.py
    ```
 
 4. Run the application:
    ```
    python main.py
    ```
+
+### Option 2: Windows Executable
+
+1. Download the latest release from the [Releases page](https://github.com/OctoPassik/DisDialogue/releases).
+2. Extract the zip file.
+3. Run `DisDialogue.exe`.
 
 ## 🎮 How to Use
 
@@ -76,7 +84,7 @@ Discord Dialog Simulator is a powerful tool designed to simulate and test Discor
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check [issues page](https://github.com/your-username/discord-dialog-simulator/issues).
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/OctoPassik/DisDialogue/issues).
 
 ## 📜 License
 
@@ -87,7 +95,7 @@ This project is [MIT](https://choosealicense.com/licenses/mit/) licensed.
 **OctoPass**
 
 - Discord: .octopass
-- Github: [@your-github-username](https://github.com/Octopassik)
+- Github: [@OctoPassik](https://github.com/OctoPassik)
 
 ---
 

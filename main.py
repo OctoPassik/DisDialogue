@@ -226,7 +226,7 @@ class DialogSimulator(QMainWindow):
         self.simulation_thread.finished.connect(self.on_simulation_finished)
         self.simulation_thread.start()
         self.start_button.setEnabled(False)
-
+#aaa
     def save_config(self):
         conn = sqlite3.connect('dialog_simulator.db')
         c = conn.cursor()

@@ -86,10 +86,6 @@ DisDialogue is a powerful Discord conversation simulator that uses webhooks to p
 
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/OctoPassik/DisDialogue/issues).
 
-## 📜 License
-
-This project is [MIT](https://choosealicense.com/licenses/mit/) licensed.
-
 ## 🙋‍♂️ Author
 
 **OctoPass**

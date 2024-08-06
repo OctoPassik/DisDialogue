@@ -82,6 +82,9 @@ DisDialogue is a powerful Discord conversation simulator that uses webhooks to p
 - **Message Timing**: Adjust the 2-second delay between messages in the code
 - **Error Handling**: Check the application output for detailed error messages
 
+## 📸 Screenshot
+![DisDialogue Screenshot](https://i.imgur.com/SP9Gy2q.png)
+
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/OctoPassik/DisDialogue/issues).

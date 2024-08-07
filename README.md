@@ -83,7 +83,7 @@ DisDialogue is a powerful Discord conversation simulator that uses webhooks to p
 - **Error Handling**: Check the application output for detailed error messages
 
 ## 📸 Screenshot
-![DisDialogue Screenshot](https://i.imgur.com/SP9Gy2q.png)
+![DisDialogue Screenshot](https://images-ext-1.discordapp.net/external/FnuBiejIm9z-EtJ3vOLWeEtCCtiJPaupinj7kYHgYe0/https/i.imgur.com/Pp6qrCB.png?format=webp&quality=lossless&width=706&height=591)
 
 ## 🤝 Contributing
 

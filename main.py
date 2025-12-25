@@ -1,58 +1,15 @@
 import sys
 import asyncio
 import aiohttp
+import ssl
+import certifi
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, \
     QPushButton, QTextEdit, QListWidget, QMessageBox, QListWidgetItem, QDialog, QSpinBox, QMenu
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
-from PyQt5.QtGui import QFont, QCursor
+from PyQt5.QtGui import QCursor
 import sqlite3
-import json
-import re
+from datetime import datetime
 
-class AvatarFetcher:
-
-    def __init__(self, bot_token: str):
-        self.api_base = "https://discord.com/api/v10"
-        self.cdn_base = "https://cdn.discordapp.com"
-        self.headers = {
-            'Authorization': f'Bot {bot_token}',
-            'User-Agent': 'DiscordWebhookSimulator/1.0'
-        }
-
-
-        self.user_cache = {}
-    async def get_user_data(self, session, user_id: str) -> dict:
-
-        if user_id in self.user_cache:
-            return self.user_cache[user_id]
-
-        try:
-            async with session.get(
-                    f"{self.api_base}/users/{user_id}",
-                    headers=self.headers
-            ) as response:
-                if response.status == 200:
-                    user_data = await response.json()
-                    self.user_cache[user_id] = user_data
-                    return user_data
-                else:
-                    print(f"API Error: {response.status} - {await response.text()}")
-        except Exception as e:
-            print(f"Request Error: {e}")
-
-        return None
-
-    async def get_avatar_url(self, session, user_id: str, size: int = 1024) -> str:
-        user_data = await self.get_user_data(session, user_id)
-
-        if user_data and 'avatar' in user_data:
-            avatar_hash = user_data['avatar']
-
-            extension = 'gif' if avatar_hash.startswith('a_') else 'png'
-            return f"{self.cdn_base}/avatars/{user_id}/{avatar_hash}.{extension}?size={size}"
-
-        default_avatar_id = int(user_id) % 5
-        return f"{self.cdn_base}/embed/avatars/{default_avatar_id}.png?size={size}"
 
 class HelpDialog(QDialog):
     def __init__(self, parent=None):
@@ -356,21 +313,6 @@ class DialogSimulator(QMainWindow):
             QLineEdit.Normal if checked else QLineEdit.Password
         )
         self.toggle_token_button.setText("Hide" if checked else "Show")
-    async def get_discord_avatar(self, session, user_id):
-        try:
-
-            async with session.get(f'https://discord.com/api/v9/users/{user_id}') as response:
-                if response.status == 200:
-                    data = await response.json()
-                    avatar_hash = data.get('avatar')
-                    if avatar_hash:
-                        return f'https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.png'
-
-                default_avatar_id = int(user_id) % 5
-                return f'https://cdn.discordapp.com/embed/avatars/{default_avatar_id}.png'
-        except:
-
-            return 'https://cdn.discordapp.com/embed/avatars/0.png'
 
     def load_data(self):
         conn = sqlite3.connect('dialog_simulator.db')
@@ -627,13 +569,6 @@ class DialogSimulator(QMainWindow):
             data.append({"name": name, "message": message})
         return data
 
-    def on_message_sent(self, message):
-        self.logs.append(message)
-
-    def on_error(self, error_message):
-        self.logs.append(f"Error: {error_message}")
-        QMessageBox.critical(self, "Error", error_message)
-
     def clear_all_data(self):
         reply = QMessageBox.question(self, 'Clear All Data',
                                      'Are you sure you want to clear all data? This action cannot be undone.',
@@ -697,9 +632,9 @@ class SimulationThread(QThread):
         self.conversation_data = conversation_data
         self.delay = delay
         self.is_running = True
-        self.avatar_fetcher = AvatarFetcher(bot_token)
 
     def run(self):
+        loop = None
         try:
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
@@ -715,7 +650,11 @@ class SimulationThread(QThread):
 
     async def simulate_dialog(self):
         try:
-            async with aiohttp.ClientSession() as session:
+            # Создаём SSL контекст с сертификатами
+            ssl_context = ssl.create_default_context(cafile=certifi.where())
+            connector = aiohttp.TCPConnector(ssl=ssl_context)
+
+            async with aiohttp.ClientSession(connector=connector) as session:
                 for message in self.conversation_data:
                     if not self.is_running:
                         break
@@ -725,7 +664,7 @@ class SimulationThread(QThread):
                         avatar_info = self.character_config[name]["avatar_url"]
 
                         if avatar_info.isdigit():
-                            avatar_url = await self.avatar_fetcher.get_avatar_url(session, avatar_info)
+                            avatar_url = await self.get_avatar_by_id(session, avatar_info)
                         else:
                             avatar_url = avatar_info
 
@@ -742,7 +681,7 @@ class SimulationThread(QThread):
 
                     except Exception as e:
                         self.error_occurred.emit(f"Error processing message: {str(e)}")
-                        await asyncio.sleep(1)  
+                        await asyncio.sleep(1)
                         continue
 
         except Exception as e:
@@ -750,32 +689,32 @@ class SimulationThread(QThread):
         finally:
             self.finished.emit()
 
-    async def _process_message(self, message):
-        """
-        Processes a single message with proper error handling.
-        """
-        name = message["name"]
-        avatar_info = self.character_config[name]["avatar_url"]
-
-        avatar_url = (await self.get_discord_avatar(self._session, avatar_info)
-                      if avatar_info.isdigit() else avatar_info)
-
-        await self.send_webhook_message(
-            self._session,
-            self.webhook_url,
-            message["message"],
-            name,
-            avatar_url
-        )
-        self.message_sent.emit(f"Message sent: {name}: {message['message'][:30]}...")
-
-    async def get_discord_avatar(self, session, user_id):
+    async def get_avatar_by_id(self, session, user_id: str) -> str:
+        """Получает URL аватара пользователя Discord по его ID"""
         try:
+            headers = {
+                'Authorization': f'Bot {self.bot_token}',
+                'User-Agent': 'DiscordWebhookSimulator/1.0'
+            }
+            async with session.get(
+                f"https://discord.com/api/v10/users/{user_id}",
+                headers=headers
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    avatar_hash = data.get('avatar')
+                    if avatar_hash:
+                        ext = 'gif' if avatar_hash.startswith('a_') else 'png'
+                        return f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.{ext}?size=256"
+                else:
+                    self.error_occurred.emit(f"API Error {response.status}: {await response.text()}")
 
-            default_avatar_id = int(user_id) % 5
-            return f'https://cdn.discordapp.com/embed/avatars/{default_avatar_id}.png'
-        except:
-            return 'https://cdn.discordapp.com/embed/avatars/0.png'
+            # Дефолтный аватар если не удалось получить
+            default_id = int(user_id) % 5
+            return f"https://cdn.discordapp.com/embed/avatars/{default_id}.png"
+        except Exception as e:
+            self.error_occurred.emit(f"Avatar fetch error: {str(e)}")
+            return "https://cdn.discordapp.com/embed/avatars/0.png"
 
     async def send_webhook_message(self, session, webhook_url, content, username, avatar_url):
         """

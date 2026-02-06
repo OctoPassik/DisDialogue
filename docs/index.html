@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary SEO Meta Tags -->
+    <title>DisDialogue — Free Discord Dialog Simulator | Discord Conversation Generator</title>
+    <meta name="description" content="DisDialogue is a free, open-source Discord dialog simulator. Create and test multi-character Discord conversations using webhooks. Download for Windows or run from Python source.">
+    <meta name="keywords" content="Discord dialog simulator, Discord conversation simulator, Discord chat simulator, Discord webhook simulator, Discord message generator, Discord roleplay tool, Discord bot testing, симулятор диалогов Discord, генератор разговоров Discord, Discord conversation maker, fake Discord chat, Discord dialog creator">
+    <meta name="author" content="OctoPass">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://octopassik.github.io/DisDialogue/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://octopassik.github.io/DisDialogue/">
+    <meta property="og:title" content="DisDialogue — Free Discord Dialog Simulator">
+    <meta property="og:description" content="Create and simulate multi-character Discord conversations using webhooks. Free, open-source desktop app for Windows, macOS, and Linux.">
+    <meta property="og:image" content="https://i.imgur.com/Z4OUzsn.png">
+    <meta property="og:site_name" content="DisDialogue">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ru_RU">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://octopassik.github.io/DisDialogue/">
+    <meta name="twitter:title" content="DisDialogue — Free Discord Dialog Simulator">
+    <meta name="twitter:description" content="Create and simulate multi-character Discord conversations using webhooks. Free desktop app.">
+    <meta name="twitter:image" content="https://i.imgur.com/Z4OUzsn.png">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "DisDialogue",
+        "alternateName": ["Discord Dialog Simulator", "Discord Conversation Simulator"],
+        "description": "A free, open-source Discord dialog simulator that creates multi-character conversations using webhooks. Desktop application built with Python and PyQt5.",
+        "url": "https://octopassik.github.io/DisDialogue/",
+        "downloadUrl": "https://github.com/OctoPassik/DisDialogue/releases",
+        "softwareVersion": "1.0",
+        "operatingSystem": ["Windows", "macOS", "Linux"],
+        "applicationCategory": "UtilitiesApplication",
+        "applicationSubCategory": "Discord Tools",
+        "author": {
+            "@type": "Person",
+            "name": "OctoPass",
+            "url": "https://github.com/OctoPassik"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "license": "https://github.com/OctoPassik/DisDialogue/blob/main/LICENSE",
+        "programmingLanguage": "Python",
+        "screenshot": "https://i.imgur.com/Pp6qrCB.png",
+        "softwareRequirements": "Python 3.7+, PyQt5",
+        "isAccessibleForFree": true,
+        "inLanguage": ["en", "ru"]
+    }
+    </script>
+
+    <!-- FAQ Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is DisDialogue?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "DisDialogue is a free, open-source desktop application that simulates Discord conversations by sending messages through Discord webhooks. It lets you create multi-character dialogs with custom avatars and names."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is DisDialogue free to use?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, DisDialogue is completely free and open-source. You can download it from GitHub or build it from source."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Does DisDialogue work on macOS and Linux?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. The Windows .exe is available for direct download, but you can run DisDialogue from Python source on any operating system including macOS and Linux."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How do I simulate a Discord conversation?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Add your Discord bot token and webhook URL, create characters with names and avatars, compose messages for each character, then click Start Simulation. Messages will appear in your Discord channel."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: #0f3460;
+            --accent: #5865f2;
+            --accent-hover: #4752c4;
+            --text-primary: #ffffff;
+            --text-secondary: #b9bbbe;
+            --success: #57f287;
+            --border: #2c2f33;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-card) 100%);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .tagline {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(88, 101, 242, 0.4);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--accent);
+        }
+
+        /* Screenshot */
+        .screenshot-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .screenshot-section img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+        }
+
+        /* Features */
+        .features {
+            padding: 60px 20px;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--accent);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Use cases */
+        .use-cases {
+            padding: 60px 20px;
+            background: var(--bg-secondary);
+        }
+
+        .use-cases h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+
+        .use-cases-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            list-style: none;
+        }
+
+        .use-cases-list li {
+            background: var(--bg-card);
+            padding: 16px 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .use-cases-list li strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .use-cases-list li span {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Install */
+        .install {
+            padding: 60px 20px;
+        }
+
+        .install h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        .install-steps {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .install-steps code {
+            display: block;
+            background: #0d1117;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            color: var(--success);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2rem; }
+            .hero .tagline { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <div class="container">
+            <h1>DisDialogue</h1>
+            <p class="tagline">
+                Free, open-source Discord dialog simulator. Create and test multi-character conversations using webhooks.
+            </p>
+            <div class="cta-buttons">
+                <a href="https://github.com/OctoPassik/DisDialogue/releases" class="btn btn-primary">Download for Windows</a>
+                <a href="https://github.com/OctoPassik/DisDialogue" class="btn btn-secondary">View on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="screenshot-section">
+        <div class="container">
+            <img src="https://i.imgur.com/Pp6qrCB.png" alt="DisDialogue - Discord Dialog Simulator Screenshot" width="706" height="591" loading="lazy">
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Multi-Character Dialogs</h3>
+                    <p>Simulate conversations between multiple Discord users, each with unique names and avatars.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Real Discord Webhooks</h3>
+                    <p>Messages are sent through real Discord webhooks and appear as genuine messages in your channel.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Custom Avatars</h3>
+                    <p>Use Discord User IDs to fetch real avatars automatically, or provide any image URL.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Persistent Storage</h3>
+                    <p>All characters, messages, and settings are saved between sessions using SQLite.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Adjustable Timing</h3>
+                    <p>Control the delay between messages from 1 to 60 seconds for realistic pacing.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Bilingual Interface</h3>
+                    <p>Full English and Russian language support built into the application.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="use-cases">
+        <div class="container">
+            <h2>Who Is This For?</h2>
+            <ul class="use-cases-list">
+                <li>
+                    <strong>Discord Bot Developers</strong>
+                    <span>Test how your bot responds to multi-user conversations</span>
+                </li>
+                <li>
+                    <strong>Community Managers</strong>
+                    <span>Prototype welcome messages and onboarding flows</span>
+                </li>
+                <li>
+                    <strong>Content Creators</strong>
+                    <span>Create realistic Discord conversation screenshots for videos and articles</span>
+                </li>
+                <li>
+                    <strong>Roleplay Communities</strong>
+                    <span>Set up scripted interactions with multiple characters</span>
+                </li>
+                <li>
+                    <strong>Server Admins</strong>
+                    <span>Simulate moderation scenarios for training purposes</span>
+                </li>
+                <li>
+                    <strong>Demo & Tutorials</strong>
+                    <span>Generate realistic Discord activity for guides and tutorials</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="install">
+        <div class="container">
+            <h2>Quick Start</h2>
+            <div class="install-steps">
+                <h3>Option 1: Windows Executable</h3>
+                <p>Download from the <a href="https://github.com/OctoPassik/DisDialogue/releases" style="color: var(--accent)">Releases page</a> and run — no installation needed.</p>
+
+                <h3 style="margin-top: 24px">Option 2: Run from Source</h3>
+                <code>git clone https://github.com/OctoPassik/DisDialogue.git
+cd DisDialogue
+pip install -r requirements.txt
+python main.py</code>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>
+            Created by <a href="https://github.com/OctoPassik">OctoPass</a> |
+            <a href="https://github.com/OctoPassik/DisDialogue">GitHub Repository</a> |
+            Discord: .octopass
+        </p>
+        <p style="margin-top: 10px; font-size: 0.85rem;">
+            DisDialogue &mdash; Discord dialog simulator, Discord conversation generator, Discord chat simulator tool
+        </p>
+    </footer>
+
+</body>
+</html>
